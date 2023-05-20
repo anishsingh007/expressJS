@@ -1,36 +1,32 @@
+const path = require('path');
 const http = require("http");
 
 const express =require("express");
+
+
+
+
+
 const bodyParser = require("body-parser");
 
 const app = express();
 
+const adminRoutes = require('./routes/admin');
+
+const shopRoutes = require('./routes/shop');
+
+const contactRoutes =require('./routes/contact')
+
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(express.static(path.join(__dirname,'public')));
 
-app.use('/add-product',(req,res,next)=>{
-    console.log(`ds`);
-    res.send(`
-    <form action="/product" method="POST">
-      <input type="text" name="title" placeholder="Product Title" required><br>
-      <input type="number" name="size" placeholder="Product Size" required><br>
-      <button type="submit">Add Product</button>
-    </form>
-  `);
-});
-
-app.post('/product',(req,res,next)=>{
-    console.log(req.body);
-    res.redirect('/');
-    
-        
-});
+app.use('/admin',adminRoutes);
+app.use(shopRoutes);
+app.use(contactRoutes);
 
 app.use((req,res,next)=>{
-    console.log("kaksaka");
-    res.send('<h1> hello From Express </h1>');
-    
+    res.status(404).sendFile(path.join(__dirname,'views','404.html'));
 })
-
 
 
 app.listen(3000);
